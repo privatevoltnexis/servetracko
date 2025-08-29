@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
+        <div class="px-4 py-4">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                        <i class="fas fa-store text-purple-700 text-sm"></i>
+                    </div>
+                    <h1 class="text-lg font-bold" id="businessNameMobile">Service Tool</h1>
+                </div>
+                <button onclick="handleLogout()" class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+            <div class="flex justify-between items-center">
+                <div class="bg-white text-purple-700 px-2 py-1 rounded-full text-xs font-semibold" id="planInfoMobile">
+                    <i class="fas fa-crown mr-1"></i> Free Plan
+                </div>
+                <button id="upgradeBtnMobile" onclick="window.location.href='plan_payment.html'" class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold" style="display: none;">
+                    <i class="fas fa-bolt mr-1"></i> Upgrade
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Business Dashboard</h2>
+        
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <!-- Orders Card -->
+            <a href="orders_mobile.html" class="bg-white rounded-xl shadow-md p-4 text-center">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-100 flex items-center justify-center">
+                    <i class="fas fa-shopping-cart text-blue-600 text-lg"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-800 mb-1">Orders</h3>
+                <p class="text-xs text-gray-600">Manage orders</p>
+            </a>
+            
+            <!-- Customers Card -->
+            <a href="customers_mobile.html" class="bg-white rounded-xl shadow-md p-4 text-center">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-users text-green-600 text-lg"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-800 mb-1">Customers</h3>
+                <p class="text-xs text-gray-600">Customer database</p>
+            </a>
+            
+            <!-- Invoice Card -->
+            <a href="invoice_mobile.html" class="bg-white rounded-xl shadow-md p-4 text-center">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-file-invoice text-purple-600 text-lg"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-800 mb-1">Invoice</h3>
+                <p class="text-xs text-gray-600">Create invoices</p>
+            </a>
+            
+            <!-- Payments Card -->
+            <a href="payments_mobile.html" class="bg-white rounded-xl shadow-md p-4 text-center">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <i class="fas fa-credit-card text-yellow-600 text-lg"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-800 mb-1">Payments</h3>
+                <p class="text-xs text-gray-600">Track payments</p>
+            </a>
+        </div>
+
+        <!-- Quick Stats Section -->
+        <div class="bg-white rounded-xl shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Overview</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-blue-50 p-3 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-blue-100 mr-3">
+                            <i class="fas fa-shopping-cart text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Today's Orders</p>
+                            <p class="font-bold text-lg" id="todayOrders">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-green-50 p-3 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-green-100 mr-3">
+                            <i class="fas fa-users text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Total Customers</p>
+                            <p class="font-bold text-lg" id="totalCustomers">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-purple-50 p-3 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-purple-100 mr-3">
+                            <i class="fas fa-file-invoice text-purple-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Pending Invoices</p>
+                            <p class="font-bold text-lg" id="pendingInvoices">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-yellow-50 p-3 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-yellow-100 mr-3">
+                            <i class="fas fa-dollar-sign text-yellow-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Today's Revenue</p>
+                            <p class="font-bold text-lg" id="todayRevenue">₹0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://kmetxulrezuzzmxhkydm.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttZXR4dWxyZXp1enpteGhreWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyMDI5MjgsImV4cCI6MjA3MTc3ODkyOH0.G3dM3GKO7dZwozrjRZ4LZLvZkqYu9L3AdrQbAbgq2rA';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+
+        async function loadUserProfile() {
+            try {
+                const existingProfile = localStorage.getItem('userProfile');
+                if (existingProfile) {
+                    const profile = JSON.parse(existingProfile);
+                    document.getElementById('businessNameMobile').textContent = profile.business_name.length > 15 ? profile.business_name.substring(0, 15) + '...' : profile.business_name;
+                    document.getElementById('planInfoMobile').innerHTML = `<i class="fas fa-crown mr-1"></i> ${profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}`;
+                    
+                    if (profile.plan === 'free' || profile.plan === 'plus') {
+                        document.getElementById('upgradeBtnMobile').style.display = 'inline-block';
+                    }
+                    
+                    currentUser = { id: profile.id };
+                    await loadDashboardStats();
+                    return;
+                }
+
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (!user) {
+                    window.location.href = 'index_mobile.html';
+                    return;
+                }
+
+                currentUser = user;
+
+                const { data: profile } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profile) {
+                    document.getElementById('businessNameMobile').textContent = profile.business_name.length > 15 ? profile.business_name.substring(0, 15) + '...' : profile.business_name;
+                    document.getElementById('planInfoMobile').innerHTML = `<i class="fas fa-crown mr-1"></i> ${profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}`;
+                    localStorage.setItem('userProfile', JSON.stringify(profile));
+                    
+                    if (profile.plan === 'free' || profile.plan === 'plus') {
+                        document.getElementById('upgradeBtnMobile').style.display = 'inline-block';
+                    }
+                    
+                    await loadDashboardStats();
+                } else {
+                    window.location.href = 'index_mobile.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                window.location.href = 'index_mobile.html';
+            }
+        }
+
+        async function loadDashboardStats() {
+            if (!currentUser) return;
+
+            try {
+                const today = new Date().toISOString().split('T')[0];
+
+                const { data: todayOrdersData } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .gte('created_at', today + 'T00:00:00')
+                    .lt('created_at', today + 'T23:59:59');
+
+                const { data: customersData } = await supabase
+                    .from('customers')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+
+                const { data: pendingInvoicesData } = await supabase
+                    .from('invoices')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'pending');
+
+                let todayRevenue = 0;
+                if (todayOrdersData) {
+                    todayRevenue = todayOrdersData
+                        .filter(order => order.status === 'completed')
+                        .reduce((sum, order) => sum + parseFloat(order.amount || 0), 0);
+                }
+
+                document.getElementById('todayOrders').textContent = todayOrdersData?.length || 0;
+                document.getElementById('totalCustomers').textContent = customersData?.length || 0;
+                document.getElementById('pendingInvoices').textContent = pendingInvoicesData?.length || 0;
+                document.getElementById('todayRevenue').textContent = `₹${todayRevenue.toFixed(0)}`;
+
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await supabase.auth.signOut();
+                localStorage.removeItem('userProfile');
+                window.location.href = 'index_mobile.html';
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+
+        window.addEventListener('load', loadUserProfile);
+    </script>
+</body>
+</html>
