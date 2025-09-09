@@ -213,7 +213,14 @@
 
         let selectedPlan = 'plus';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is already signed in
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user && localStorage.getItem('userProfile')) {
+                window.location.href = 'dashboard_mobile.html';
+                return;
+            }
+
             const loginTab = document.getElementById('loginTab');
             const plansTab = document.getElementById('plansTab');
             const loginForm = document.getElementById('loginForm');
